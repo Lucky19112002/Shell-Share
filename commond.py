@@ -4,7 +4,7 @@ import time
 import random
 import pyfiglet
 import socket
-
+from current_work import custom_server 
 # ANSI escape sequence for green color
 GREEN = "\033[92m"
 
@@ -28,6 +28,8 @@ def create(args):
     print(f"\tUser IP address: {ip}")
     print(f"\tPort: {port}")
     print(f"\tPassword: {password}")
+    ports = int(port)
+    custom_server.start_custom_server(ports, password)
 
 def log(args):
     filename = args[0]
