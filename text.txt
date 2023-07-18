@@ -1,0 +1,3 @@
+python -u "e:\000Lucky\Final Year Project\WORK\commond.py"
+
+pip install -r "e:\000Lucky\Final Year Project\WORK\requirements.txt"
