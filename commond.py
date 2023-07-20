@@ -4,7 +4,9 @@ import time
 import random
 import pyfiglet
 import socket
-from current_work import custom_server 
+import multiprocessing
+from current_work import custom_server
+
 # ANSI escape sequence for green color
 GREEN = "\033[92m"
 
@@ -17,7 +19,6 @@ def connect(args):
     print(f"\tIP: {ip}")
     print(f"\tPort: {port}")
 
-
 def create(args):
     if len(args) != 2:
         print("\tInvalid command. Usage: create [port] [password]")
@@ -27,9 +28,30 @@ def create(args):
     print(f"\tFetching user IP address...")
     print(f"\tUser IP address: {ip}")
     print(f"\tPort: {port}")
-    print(f"\tPassword: {password}")
+    print(f"\tPassword: {password}", end="")  # Output on the same line without a new line
+
+    # Convert port to integer
     ports = int(port)
-    custom_server.start_custom_server(ports, password)
+
+    # Start the custom server as a separate process
+    server_process = multiprocessing.Process(target=custom_server.start_custom_server, args=(ports, password))
+
+    # Set the process as a daemon so that it runs in the background and terminates when the main program ends
+    server_process.daemon = True
+
+    # Start the process
+    server_process.start()
+    print()  # Move to the next line after printing password without a new line
+
+    # Wait for a short period to check if the server process is still alive
+    time.sleep(2)
+
+    if server_process.is_alive():
+        print(f"\tServer is up and running on {ip}:{ports}")
+    else:
+        print(f"\tServer failed to start. Please check for any errors.")
+
+
 
 def log(args):
     filename = args[0]
@@ -112,3 +134,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+

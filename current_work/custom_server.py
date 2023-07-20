@@ -21,7 +21,7 @@ def start_custom_server(port, password):
 
         # Start listening for incoming connections
         server_socket.listen(1)
-        print(f"Server is up and running on {ip}:{port}")
+                
 
         # Register the signal handler for the interrupt signal (Ctrl+C)
         signal.signal(signal.SIGINT, signal_handler)
