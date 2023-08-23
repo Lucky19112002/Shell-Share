@@ -5,7 +5,8 @@ import random
 import pyfiglet
 import socket
 import multiprocessing
-from current_work import dummy
+from current_work import custom_server
+from current_work import connection_module
 
 # ANSI escape sequence for green color
 GREEN = "\033[92m"
@@ -15,9 +16,7 @@ def connect(args):
         print("\tInvalid command. Usage: connect [IP] [PORT]")
         return
     ip, port = args
-    print(f"\tConnected to {ip}:{port}")
-    print(f"\tIP: {ip}")
-    print(f"\tPort: {port}")
+    print(f"\tConnecting to {ip}:{port}")
 
 def create(args):
     if len(args) != 2:
@@ -34,7 +33,7 @@ def create(args):
     ports = int(port)
 
     # Start the custom server as a separate process
-    server_process = multiprocessing.Process(target=dummy.start_custom_server, args=(ports, password))
+    server_process = multiprocessing.Process(target=custom_server.start_custom_server, args=(ports, password))
 
     # Set the process as a daemon so that it runs in the background and terminates when the main program ends
     server_process.daemon = True
