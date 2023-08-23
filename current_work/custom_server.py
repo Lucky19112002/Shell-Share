@@ -1,6 +1,8 @@
 import socket
 import signal
 import sys
+import csv
+import datetime
 
 def start_custom_server(port, password):
     # Get the local IP address
@@ -31,6 +33,20 @@ def start_custom_server(port, password):
             client_socket, addr = server_socket.accept()
             print(f"Connected to {addr[0]}:{addr[1]}")
 
+            client_socket, addr = server_socket.accept()
+            print(f"Connected to {addr[0]}:{addr[1]}")
+            
+            # Get current timestamp
+            timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            
+            # Prompt user for nickname
+            nickname = input("Please enter your nickname: ")
+            
+            # Write user data to CSV file
+            with open("user_activity.csv", "a") as csv_file:
+                csv_writer = csv.writer(csv_file)
+                csv_writer.writerow([timestamp, addr[0], addr[1], nickname])
+
             # Request password from the client
             client_socket.send("Please enter the password: ".encode())
             entered_password = client_socket.recv(1024).decode()
@@ -56,3 +72,32 @@ def start_custom_server(port, password):
 
     # After the server loop ends, return from the function
     return
+
+def connect_to_server(ip, port, password):
+    try:
+        # Create a socket object
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+        # Connect to the server
+        client_socket.connect((ip, port))
+        print(f"Connected to server at {ip}:{port}")
+
+        # Send the password to the server
+        client_socket.send(password.encode())
+
+        # Receive the server's response
+        response = client_socket.recv(1024).decode()
+        print(response)
+
+        if "Password accepted" in response:
+            # Handle client-server communication here
+            # For example, you can send data to the server:
+            data_to_send = "Hello from client!"
+            client_socket.send(data_to_send.encode())
+
+    except Exception as e:
+        print(f"Error occurred: {str(e)}")
+
+    finally:
+        # Close the client socket
+        client_socket.close()
