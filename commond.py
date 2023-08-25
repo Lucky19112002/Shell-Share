@@ -3,9 +3,9 @@ import os
 import time
 import random
 import pyfiglet
-import socket
+import socket,csv
 import multiprocessing
-from current_work import dummy
+from current_work import custom_server
 
 # ANSI escape sequence for green color
 GREEN = "\033[92m"
@@ -15,9 +15,25 @@ def connect(args):
         print("\tInvalid command. Usage: connect [IP] [PORT]")
         return
     ip, port = args
-    print(f"\tConnected to {ip}:{port}")
-    print(f"\tIP: {ip}")
-    print(f"\tPort: {port}")
+    print(f"\tConnecting to {ip}:{port}")
+    password = input("Please enter the password: ")  # Prompt user for password
+     
+    # Start the connection process in a separate background process
+    connection_process = multiprocessing.Process(target=custom_server.connect_to_server, args=(ip, int(port), password))
+    
+    # Set the process as a daemon so that it runs in the background and terminates when the main program ends
+    connection_process.daemon = True
+    
+    # Start the process
+    connection_process.start()
+    
+    # Wait for a short period to check if the connection process is still alive
+    time.sleep(2)
+    
+    if connection_process.is_alive():
+        print(f"\tConnected to {ip}:{port}")
+    else:
+        print(f"\tConnection failed. Please check for any errors.")
 
 def create(args):
     if len(args) != 2:
@@ -34,7 +50,7 @@ def create(args):
     ports = int(port)
 
     # Start the custom server as a separate process
-    server_process = multiprocessing.Process(target=dummy.start_custom_server, args=(ports, password))
+    server_process = multiprocessing.Process(target=custom_server.start_custom_server, args=(ports, password))
 
     # Set the process as a daemon so that it runs in the background and terminates when the main program ends
     server_process.daemon = True
@@ -59,7 +75,13 @@ def log(args):
 
 def shell(args):
     print("\tList of connected users:")
-    # Add your logic here to fetch and print the list of connected users
+    
+    # Read and display the CSV file
+    with open("current_work/user_activity.csv", "r") as csv_file:
+        csv_reader = csv.reader(csv_file)
+        next(csv_reader)
+        for row in csv_reader:
+            print(f"\tTimestamp: {row[0]}, IP Address: {row[1]}, Port: {row[2]}, Nickname: {row[3]}")
 
 def help():
     print("Available commands:")
