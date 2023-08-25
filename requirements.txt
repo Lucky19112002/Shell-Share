@@ -1,3 +1,2 @@
 pyfiglet==0.8.post1
-gnureadline
-pyreadline
+netifaces
