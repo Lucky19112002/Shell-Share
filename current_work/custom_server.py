@@ -3,10 +3,23 @@ import signal
 import sys
 import csv
 import datetime
+import netifaces
+
+def get_wifi_ip():
+    interfaces = netifaces.interfaces()
+    for iface in interfaces:
+        addresses = netifaces.ifaddresses(iface)
+        if netifaces.AF_INET in addresses:
+            for link in addresses[netifaces.AF_INET]:
+                if 'addr' in link:
+                    ip = link['addr']
+                    if ip.startswith('192.168.79'):
+                        return ip
+    return None
 
 def start_custom_server(port, password):
     # Get the local IP address
-    ip = socket.gethostbyname(socket.gethostname())
+    ip = get_wifi_ip()
 
     # Create a socket object
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
