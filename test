@@ -1,0 +1,24 @@
+import socket
+import psutil
+
+def get_wifi_ip():
+    wifi_interface = None
+    # Find the Wi-Fi interface by checking the interface name for 'Wi-Fi' or 'wlan'
+    for interface, addrs in psutil.net_if_addrs().items():
+        if "Wi-Fi" in interface or "wlan" in interface:
+            wifi_interface = interface
+            break
+
+    if wifi_interface:
+        for addr in addrs:
+            if addr.family == socket.AF_INET:
+                return addr.address
+
+    return None
+
+if __name__ == "__main__":
+    wifi_ip = get_wifi_ip()
+    if wifi_ip is not None:
+        print(f"Your Wi-Fi IP address is: {wifi_ip}")
+    else:
+        print("No Wi-Fi IP address found.")
