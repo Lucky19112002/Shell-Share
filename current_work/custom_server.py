@@ -19,7 +19,6 @@ def get_wifi_ip():
                 return addr.address
 
     return None
-
 def start_custom_server(port, password):
     # Get the local IP address
     ip = get_wifi_ip()
@@ -39,7 +38,6 @@ def start_custom_server(port, password):
 
         # Start listening for incoming connections
         server_socket.listen(1)
-                
 
         # Register the signal handler for the interrupt signal (Ctrl+C)
         signal.signal(signal.SIGINT, signal_handler)
@@ -49,35 +47,38 @@ def start_custom_server(port, password):
             client_socket, addr = server_socket.accept()
             print(f"Connected to {addr[0]}:{addr[1]}")
 
-            client_socket, addr = server_socket.accept()
-            print(f"Connected to {addr[0]}:{addr[1]}")
-            
-            # Get current timestamp
-            timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            
-            # Prompt user for nickname
-            nickname = input("Please enter your nickname: ")
-            
-            # Write user data to CSV file
-            with open("user_activity.csv", "a") as csv_file:
-                csv_writer = csv.writer(csv_file)
-                csv_writer.writerow([timestamp, addr[0], addr[1], nickname])
+            # Implement a handshake protocol to confirm the server's availability
+            handshake_request = client_socket.recv(1024).decode()
+            if handshake_request == "CHECK_AVAILABILITY":
+                # Send a response to confirm availability
+                client_socket.send("SERVER_AVAILABLE".encode())
 
-            # Request password from the client
-            client_socket.send("Please enter the password: ".encode())
-            entered_password = client_socket.recv(1024).decode()
+                # Get current timestamp
+                timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-            # Check if the entered password is correct
-            if entered_password == password:
-                client_socket.send("Password accepted. Welcome!".encode())
-                # Handle the client connection (you can implement your own logic here)
-                # For example, you can receive data from the client:
-                data = client_socket.recv(1024)
-                print(f"Received data: {data.decode()}")
-            else:
-                client_socket.send("Incorrect password. Connection closed.".encode())
-                # Close the client connection
-                client_socket.close()
+                # Prompt user for nickname
+                nickname = input("Please enter your nickname: ")
+
+                # Write user data to CSV file
+                with open("user_activity.csv", "a") as csv_file:
+                    csv_writer = csv.writer(csv_file)
+                    csv_writer.writerow([timestamp, addr[0], addr[1], nickname])
+
+                # Request password from the client
+                client_socket.send("Please enter the password: ".encode())
+                entered_password = client_socket.recv(1024).decode()
+
+                # Check if the entered password is correct
+                if entered_password == password:
+                    client_socket.send("Password accepted. Welcome!".encode())
+                    # Handle the client connection (you can implement your own logic here)
+                    # For example, you can receive data from the client:
+                    data = client_socket.recv(1024)
+                    print(f"Received data: {data.decode()}")
+                else:
+                    client_socket.send("Incorrect password. Connection closed.".encode())
+                    # Close the client connection
+                    client_socket.close()
 
     except Exception as e:
         print(f"Error occurred: {str(e)}")
