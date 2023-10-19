@@ -3,24 +3,27 @@ import signal
 import sys
 import csv
 import datetime
-import netifaces
+import psutil
 
 def get_wifi_ip():
-    interfaces = netifaces.interfaces()
-    for iface in interfaces:
-        addresses = netifaces.ifaddresses(iface)
-        if netifaces.AF_INET in addresses:
-            for link in addresses[netifaces.AF_INET]:
-                if 'addr' in link:
-                    ip = link['addr']
-                    if ip.startswith('192.168.79'):
-                        return ip
+    wifi_interface = None
+    # Find the Wi-Fi interface by checking the interface name for 'Wi-Fi' or 'wlan'
+    for interface, addrs in psutil.net_if_addrs().items():
+        if "Wi-Fi" in interface or "wlan" in interface:
+            wifi_interface = interface
+            break
+
+    if wifi_interface:
+        for addr in addrs:
+            if addr.family == socket.AF_INET:
+                return addr.address
+
     return None
 
 def start_custom_server(port, password):
     # Get the local IP address
     ip = get_wifi_ip()
-
+    print(ip)
     # Create a socket object
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 

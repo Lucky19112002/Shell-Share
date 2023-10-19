@@ -6,21 +6,24 @@ import pyfiglet
 import socket,csv
 import multiprocessing
 from current_work import custom_server
-import netifaces
+import psutil
 
 # ANSI escape sequence for green color
 GREEN = "\033[92m"
 
 def get_wifi_ip():
-    interfaces = netifaces.interfaces()
-    for iface in interfaces:
-        addresses = netifaces.ifaddresses(iface)
-        if netifaces.AF_INET in addresses:
-            for link in addresses[netifaces.AF_INET]:
-                if 'addr' in link:
-                    ip = link['addr']
-                    if ip.startswith('192.168.79'):
-                        return ip
+    wifi_interface = None
+    # Find the Wi-Fi interface by checking the interface name for 'Wi-Fi' or 'wlan'
+    for interface, addrs in psutil.net_if_addrs().items():
+        if "Wi-Fi" in interface or "wlan" in interface:
+            wifi_interface = interface
+            break
+
+    if wifi_interface:
+        for addr in addrs:
+            if addr.family == socket.AF_INET:
+                return addr.address
+
     return None
 def connect(args):
     if len(args) != 2:
