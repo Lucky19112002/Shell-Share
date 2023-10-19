@@ -1,6 +1,6 @@
-2023-07-20 19:51:29,103 - INFO: Server is up and running on 192.168.56.1:5000
-2023-07-20 19:53:36,277 - ERROR: Error occurred: [WinError 10053] An established connection was aborted by the software in your host machine
-2023-07-20 20:00:57,944 - INFO: Server is up and running on 192.168.56.1:5000
-2023-07-20 20:01:46,673 - INFO: Server is up and running on 192.168.56.1:5000
-2023-07-20 20:12:58,738 - INFO: Server is up and running on 192.168.56.1:5000
-2023-07-24 11:41:39,276 - INFO: Server is up and running on 10.8.1.48:5000
+2023-10-19 23:42:26,530 - INFO - Received PUT request to update configuration
+2023-10-19 23:42:35,796 - INFO - Request from 192.168.58.188 on 4444
+2023-10-19 23:42:35,796 - INFO - Connected to 192.168.58.188
+2023-10-19 23:42:40,798 - INFO - Flag host by 192.168.58.188 - "Bug in server\var
+2023-10-19 23:45:43,098 - INFO - Received PUT request to update configuration
+2023-10-19 23:46:06,760 - INFO - Received PUT request to update configuration

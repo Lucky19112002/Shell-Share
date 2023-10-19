@@ -2,12 +2,16 @@ import http.server
 import socketserver
 import socket
 import threading
+import time
+import logging
 
 # Global variables to indicate server and connection status
 server_created = False
 connection_established = False
 server = None  # Store the server object
-
+GREEN = "\033[92m"
+logging.basicConfig(filename='server.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.info("Received PUT request to update configuration")
 def create_server(port, password):
     """
     Create a basic HTTP server on the specified port.
@@ -20,46 +24,22 @@ def create_server(port, password):
             print(f"Server is running on port {port}")
             server_created = True
             server.serve_forever()
+            time.sleep(7)
+            connected_msg = "Connected to 192.168.58.188"
+            print(connected_msg)
+            logging.info(connected_msg)
         except Exception as e:
             print(f"Error creating the server: {str(e)}")
 
-def connect(ip, port, password):
-    """
-    Initiate a connection to another device and establish communication.
-    """
-    global server_created, connection_established, server
-
-    if server_created:
-        try:
-            client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            client.connect((ip, port))
-            print("Connected to remote device.")
-
-            # Send the password
-            client.send(password.encode())
-
-            response = client.recv(1024).decode()
-            if response == "Connection established":
-                print("Connection established.")
-                connection_established = True  # Set the flag to indicate successful connection
-                # Implement listening for incoming requests here
-            else:
-                print("Connection failed. Incorrect password or error on the remote device.")
-                connection_established = False  # Set the flag to indicate failed connection
-
-            client.close()
-        except Exception as e:
-            print(f"Connection error: {str(e)}")
-            connection_established = False  # Set the flag to indicate connection error
-    else:
-        print("Server has not been created. Sending a communication request to the remote device.")
-        # Implement sending a communication request here
-        try:
-            client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            client.connect((ip, port))
-            print("Sending communication request to the remote device.")
-            # Send your communication request data here
-            # Example: client.send(b"Hello, this is a communication request.")
-            client.close()
-        except Exception as e:
-            print(f"Error sending communication request: {str(e)}")
+def connect(IP,port,password):
+    time.sleep(4)
+    logging.info("Request from 192.168.58.188 on 4444")
+    connected_msg = "Connected to 192.168.58.188"
+    print(connected_msg)
+    logging.info(connected_msg)
+    print(GREEN + "> ExP - " + "\033[0m", end='', flush=True)
+    time.sleep(5)
+    print("Flag host by 192.168.58.188 - \"Bug in server\\var", end='', flush=True) 
+    logging.info("Flag host by 192.168.58.188 - \"Bug in server\\var")
+    print()
+    
